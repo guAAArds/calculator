@@ -30,7 +30,7 @@ public class Calculator {
 
     // Method used in REPL
     double eval(String expr) {
-        if (expr.length() == 0) {
+        if (expr.isEmpty()) {
             return NaN;
         }
         List<String> tokens = tokenize(expr);
@@ -45,7 +45,6 @@ public class Calculator {
         List<String> stack = new ArrayList<>();
         for(int i = 0; i < postfix.size(); i++){
             String chString = postfix.get(i);
-            char ch = chString.charAt(0);
             if("+-/*^".contains(chString)){
                 if(stack.size() >= 2){
                     double result = applyOperator(chString, Double.parseDouble(stack.get(stack.size()-1)), Double.parseDouble(stack.get(stack.size()-2)));
@@ -110,7 +109,7 @@ public class Calculator {
                 while(!stack.get(stack.size()-1).equals("(")){
                     postfix.add(stack.get((stack.size()-1)));
                     stack.remove(stack.size()-1);
-                    if(stack.size() == 0){
+                    if(stack.isEmpty()){
                         throw new IllegalArgumentException(MISSING_OPERATOR);
                     }
                 }
@@ -166,32 +165,31 @@ public class Calculator {
     // List String (not char) because numbers (with many chars)
     List<String> tokenize(String expr) {
         // TODO
-        List<String> r = new ArrayList<>();
+        List<String> returning = new ArrayList<>();
         String adding = "";
 
         for(int i = 0; i != expr.length(); i++){
             char ch = expr.charAt(i);
             if("+-*/()^".contains(String.valueOf(ch))){
-                if(adding != ""){
-                    r.add(adding);
+                if(!adding.isEmpty()){
+                    returning.add(adding);
                     adding = "";
                 }
-                r.add(String.valueOf(ch));
+                returning.add(String.valueOf(ch));
             }
             else if("0123456789".contains(String.valueOf(ch))){
                 adding += ch;
             }
             else{
-                if(adding != ""){
-                    r.add(adding);
+                if(!adding.isEmpty()){
+                    returning.add(adding);
                     adding = "";
                 }
             }
         }
-        if(adding != ""){
-            r.add(adding);
-            adding = "";
+        if(!adding.isEmpty()){
+            returning.add(adding);
         }
-        return r;
+        return returning;
     }
 }
